@@ -27,6 +27,7 @@ public class AdministratorController {
             employeeService.insertEmployee(new Employee(params));
             return Result.ok();
         }catch (Exception e) {
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -38,6 +39,7 @@ public class AdministratorController {
             employeeService.updateEmployee(new Employee(params));
             return Result.ok();
         }catch (Exception e) {
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -49,6 +51,7 @@ public class AdministratorController {
             employeeService.deleteEmployee((Integer) params.get("employee_id"));
             return Result.ok();
         }catch (Exception e) {
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
