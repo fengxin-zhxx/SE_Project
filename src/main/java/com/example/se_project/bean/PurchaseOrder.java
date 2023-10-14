@@ -8,13 +8,23 @@ public class PurchaseOrder {
     public String customerAddress;
     public String purchasedProduct;
     public String purchasedDate;
+    public Integer employeeId;
 
-    public PurchaseOrder(Integer purchaseOrderId, String customerContact, String customerAddress, String purchaseProduct, String purchasedDate) {
+    public PurchaseOrder(Integer purchaseOrderId, String customerContact, String customerAddress, String purchasedProduct, String purchasedDate, Integer employeeId) {
         this.purchaseOrderId = purchaseOrderId;
         this.customerContact = customerContact;
         this.customerAddress = customerAddress;
-        this.purchasedProduct = purchaseProduct;
+        this.purchasedProduct = purchasedProduct;
         this.purchasedDate = purchasedDate;
+        this.employeeId = employeeId;
+    }
+
+    public Integer getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Integer employeeId) {
+        this.employeeId = employeeId;
     }
 
     public Integer getPurchaseOrderId() {
@@ -63,5 +73,6 @@ public class PurchaseOrder {
         this.customerAddress = (String) params.get("customer_address");
         this.purchasedProduct = (String) params.get("purchased_product");
         this.purchasedDate = (String) params.get("purchased_date");
+        this.employeeId = (Integer) params.get("employee_id");
     }
 }

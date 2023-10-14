@@ -24,8 +24,8 @@ public class AdministratorController {
     public Result AddEmployee(@RequestBody Map<String, Object> params){
         System.out.println("AddEmployee" + params);
         try{
-            employeeService.insertEmployee(new Employee(params));
-            return Result.ok();
+            Integer employeeId = employeeService.insertEmployee(new Employee(params));
+            return Result.ok("添加成功，员工ID为 " + employeeId);
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());
@@ -37,7 +37,7 @@ public class AdministratorController {
         System.out.println("UpdateEmployee" + params);
         try{
             employeeService.updateEmployee(new Employee(params));
-            return Result.ok();
+            return Result.ok("修改成功！");
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());
@@ -49,7 +49,7 @@ public class AdministratorController {
         System.out.println("DeleteEmployee" + params);
         try{
             employeeService.deleteEmployee((Integer) params.get("employee_id"));
-            return Result.ok();
+            return Result.ok("删除成功！");
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());

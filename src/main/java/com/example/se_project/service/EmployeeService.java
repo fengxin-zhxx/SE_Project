@@ -10,8 +10,9 @@ public class EmployeeService {
     @Autowired
     private EmployeeMapper employeeMapper;
 
-    public void insertEmployee(Employee employee){
+    public Integer insertEmployee(Employee employee){
         employeeMapper.insertEmployee(employee);
+        return employee.getEmployeeId();
     }
 
     public void updateEmployee(Employee employee){

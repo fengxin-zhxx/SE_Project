@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.se_project.bean.Employee;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
             "#{standardTaxDeductions}, #{otherDeductions}, #{phoneNumber}, " +
             "#{hourlyRate}, #{salary}, #{commissionRate}, #{hourLimit}, #{payMethod})"
     )
+    @Options(useGeneratedKeys=true, keyProperty="employeeId", keyColumn="employee_id")
     void insertEmployee(Employee employee);
 
 

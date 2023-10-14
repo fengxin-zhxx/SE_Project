@@ -60,6 +60,14 @@ public class Result {
         r.setMessage("成功");
         return r;
     }
+    //成功静态方法
+    public static Result ok(String message) {
+        Result r = new Result();
+        r.setSuccess(true);
+        r.setCode(ResultCode.SUCCESS);
+        r.setMessage(message);
+        return r;
+    }
 
     //失败静态方法
     public static Result error(String mes) {

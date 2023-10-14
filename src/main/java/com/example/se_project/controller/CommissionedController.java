@@ -23,9 +23,9 @@ public class CommissionedController {
         System.out.println("AddPurchaseOrder" + params);
         try {
             PurchaseOrder purchaseOrder = new PurchaseOrder(params);
-            purchaseOrderService.insertPurchaseOrder(purchaseOrder);
+            Integer purchaseOrderId = purchaseOrderService.insertPurchaseOrder(purchaseOrder);
 
-            return Result.ok();
+            return Result.ok("添加成功，订单ID为 " + purchaseOrderId);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());
@@ -37,9 +37,13 @@ public class CommissionedController {
         System.out.println("UpdatePurchaseOrder" + params);
         try {
             PurchaseOrder purchaseOrder = new PurchaseOrder(params);
+            Result checkRes = purchaseOrderService.checkPurchaseOrderOwned(purchaseOrder);
+            if(!checkRes.getSuccess()){
+                return checkRes;
+            }
             purchaseOrderService.updatePurchaseOrder(purchaseOrder);
 
-            return Result.ok();
+            return Result.ok("修改成功！");
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());
@@ -52,7 +56,7 @@ public class CommissionedController {
         try {
             Integer purchaseOrderId = (Integer) params.get("purchase_order_id");
             purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
-            return Result.ok();
+            return Result.ok("删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());
