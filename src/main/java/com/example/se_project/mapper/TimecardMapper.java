@@ -2,6 +2,7 @@ package com.example.se_project.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.se_project.bean.Timecard;
+import com.example.se_project.bean.TimecardEntry;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
@@ -38,8 +39,17 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
             "INSERT INTO timecard_entry(`timecard_id`, `project_id`, `work_date`, `hours_worked`) " +
                     "values (#{timecardId}, #{projectId}, #{workDate}, #{hoursWorked})"
     )
-    void insertTimecardEntry(Timecard.TimecardEntry timecardEntry);
+    @Options(useGeneratedKeys=true, keyProperty="timecardEntryId", keyColumn="timecard_entry_id")
+    void insertTimecardEntry(TimecardEntry timecardEntry);
 
     @Select("SELECT * FROM `timecard_entry` WHERE `timecard_id` = #{timecardId}")
-    List<Map<String, Object>> getTimecardEntriesByTimecardId(Integer timecardId);
+    List<TimecardEntry> getTimecardEntriesByTimecardId(Integer timecardId);
+
+
+    @Update("UPDATE `timecard`\n" +
+            "SET\n" +
+            "`submitted_date` = #{submitted_date},\n" +
+            "`status` = 'Submitted'\n" +
+            "WHERE `timecard_id` = #{timecard_id}\n")
+    void submitTimecard(String submitted_date, Integer timecard_id);
 }

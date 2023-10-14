@@ -1,7 +1,10 @@
 package com.example.se_project.controller;
 
+import com.example.se_project.bean.Project;
 import com.example.se_project.bean.PurchaseOrder;
 import com.example.se_project.bean.Timecard;
+import com.example.se_project.bean.TimecardEntry;
+import com.example.se_project.service.ProjectService;
 import com.example.se_project.service.PurchaseOrderService;
 import com.example.se_project.service.TimecardService;
 import com.example.se_project.utils.Result;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,6 +22,10 @@ import java.util.Map;
 public class EmployeeController {
     @Autowired
     private PurchaseOrderService purchaseOrderService;
+    @Autowired
+    private TimecardService timecardService;
+    @Autowired
+    private ProjectService projectService;
 
     /*
     *  For Commissioned Employees
@@ -69,8 +77,6 @@ public class EmployeeController {
     }
 
 
-    @Autowired
-    private TimecardService timecardService;
     /*
     *  For Hourly and Salaried Employees
     *
@@ -89,6 +95,44 @@ public class EmployeeController {
             return Result.error(e.getMessage());
         }
 
+    }
+    @RequestMapping("/GetProjects")
+    public Result GetProjects(@RequestBody Map<String, Object> params) {
+        System.out.println("GetProjects" + params);
+        try{
+            List<Project> allProject = projectService.getAllProjects();
+            return Result.ok().data("data", allProject);
+        }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/AddTimecardEntry")
+    public Result UpdateTimecard(@RequestBody Map<String, Object> params) {
+        System.out.println("UpdateTimecard" + params);
+        try{
+            TimecardEntry timecardEntry = new TimecardEntry(params);
+            Integer timecardEntryId = timecardService.insertTimecard(timecardEntry);
+            return Result.ok("上传成功！时间片表项编号为 " + timecardEntryId);
+
+        }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/SubmitTimecard")
+    public Result SubmitTimecardEntry(@RequestBody Map<String, Object> params) {
+        System.out.println("SubmitTimecardEntry" + params);
+        try{
+            Integer timecardEntryId = (Integer) params.get("timecard_id");
+            /*
+            todo: 检查总工作时长是否超过规定
+            */
+            timecardService.submitTimecard(timecardEntryId);
+            return Result.ok("提交成功！");
+        }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
     }
 
 

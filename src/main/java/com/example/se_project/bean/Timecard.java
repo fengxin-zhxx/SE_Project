@@ -6,52 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Timecard {
-    public class TimecardEntry {
-        private Integer entryId;
-        private Integer projectId;
-        private String workDate;
-        private Double hoursWorked;
-
-        public TimecardEntry(Integer entryId, Integer projectId, String workDate, Double hoursWorked) {
-            this.entryId = entryId;
-            this.projectId = projectId;
-            this.workDate = workDate;
-            this.hoursWorked = hoursWorked;
-        }
-
-        public Integer getEntryId() {
-            return entryId;
-        }
-
-        public void setEntryId(Integer entryId) {
-            this.entryId = entryId;
-        }
-
-        public Integer getProjectId() {
-            return projectId;
-        }
-
-        public void setProjectId(Integer projectId) {
-            this.projectId = projectId;
-        }
-
-        public String getWorkDate() {
-            return workDate;
-        }
-
-        public void setWorkDate(String workDate) {
-            this.workDate = workDate;
-        }
-
-        public Double getHoursWorked() {
-            return hoursWorked;
-        }
-
-        public void setHoursWorked(Double hoursWorked) {
-            this.hoursWorked = hoursWorked;
-        }
-    }
-
     private Integer timecardId;
     private Integer employeeId;
     private String startDate;

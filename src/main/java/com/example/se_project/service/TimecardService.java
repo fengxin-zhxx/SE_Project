@@ -1,6 +1,7 @@
 package com.example.se_project.service;
 
 import com.example.se_project.bean.Timecard;
+import com.example.se_project.bean.TimecardEntry;
 import com.example.se_project.mapper.TimecardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,9 @@ public class TimecardService {
     public Timecard checkOrCreateTimecard(Integer employee_id){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         String date = formatter.format(new Date(System.currentTimeMillis()));
-        List<Timecard>  currentTimecard = timecardMapper.getCurrentTimecardByEmployeeId(employee_id, date);
+        List<Timecard>  currentTimecardList = timecardMapper.getCurrentTimecardByEmployeeId(employee_id, date);
 
-        if(currentTimecard.size() == 0){
+        if(currentTimecardList.size() == 0){
             Calendar calendar = Calendar.getInstance();
             calendar.setFirstDayOfWeek(Calendar.MONDAY);
             calendar.setTime(new Date());
@@ -36,11 +37,24 @@ public class TimecardService {
             timecardMapper.insertTimecard(timecard);
             return timecard;
         }else{
-            return currentTimecard.get(0);
+            Timecard currentTimecard = currentTimecardList.get(0);
+            List<TimecardEntry> currentTimecardEntries = timecardMapper.getTimecardEntriesByTimecardId(currentTimecard.getTimecardId());
+            currentTimecard.setTimecardEntries(currentTimecardEntries);
+            return currentTimecard;
         }
 
 
     }
 
 
+    public Integer insertTimecard(TimecardEntry timecardEntry) {
+        timecardMapper.insertTimecardEntry(timecardEntry);
+        return timecardEntry.getTimecardEntryId();
+    }
+
+    public void submitTimecard(Integer timecardEntryId) {
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+        timecardMapper.submitTimecard(currentDate, timecardEntryId);
+    }
 }
