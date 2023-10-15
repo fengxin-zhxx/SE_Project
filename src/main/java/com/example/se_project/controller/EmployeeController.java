@@ -115,6 +115,20 @@ public class EmployeeController {
             return Result.error(e.getMessage());
         }
     }
+
+    @RequestMapping("/UpdateTimecardEntry")
+    public Result UpdateTimecardEntry(@RequestBody Map<String, Object> params) {
+        System.out.println("UpdateTimecardEntry" + params);
+        try {
+            TimecardEntry timecardEntry = new TimecardEntry(params);
+            timecardService.updateTimecardEntry(timecardEntry);
+            return Result.ok("修改成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
     @RequestMapping("/GetProjects")
     public Result GetProjects() {
         System.out.println("GetProjects");

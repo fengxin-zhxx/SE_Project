@@ -71,4 +71,8 @@ public class TimecardService {
             return timecardEntries.subList(startIndex, endIndex);
         }
     }
+
+    public void updateTimecardEntry(TimecardEntry timecardEntry) {
+        timecardMapper.updateTimecardEntry(timecardEntry);
+    }
 }

@@ -52,4 +52,15 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
             "`status` = 'Submitted'\n" +
             "WHERE `timecard_id` = #{timecard_id}\n")
     void submitTimecard(String submitted_date, Integer timecard_id);
+
+
+    @Update("UPDATE `timecard_entry`\n" +
+            "SET\n" +
+            "`timecard_entry_id` = #{timecardEntryId},\n" +
+            "`timecard_id` = #{timecardId},\n" +
+            "`project_id` = #{projectId},\n" +
+            "`work_date` = #{workDate},\n" +
+            "`hours_worked` = #{hoursWorked}\n" +
+            "WHERE `timecard_entry_id` = #{timecardEntryId};\n")
+    void updateTimecardEntry(TimecardEntry timecardEntry);
 }

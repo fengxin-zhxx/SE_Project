@@ -68,6 +68,9 @@ public class TimecardEntry {
     }
 
     public TimecardEntry(Map<String, Object> params) {
+        if(params.get("timecard_entry_id") != null){
+            this.timecardEntryId = Integer.valueOf(String.valueOf(params.get("timecard_entry_id")));
+        }
         this.timecardId = Integer.valueOf(String.valueOf(params.get("timecard_id")));
         this.projectId = Integer.valueOf(String.valueOf(params.get("project_id")));
         this.workDate = (String) params.get("work_date");
