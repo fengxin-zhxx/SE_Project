@@ -94,11 +94,30 @@ public class EmployeeController {
         }catch (Exception e){
             return Result.error(e.getMessage());
         }
+    }
 
+    @RequestMapping("/GetTimecardEntries")
+    public Result GetTimecardEntries(@RequestBody Map<String, Object> params){
+        System.out.println("GetTimecardEntries" + params);
+        try{
+            Integer employeeId = (Integer) params.get("employee_id");
+
+            // 保证timecard存在，不存在则新建，返回当前timecard编号
+            Timecard currentTimecard = timecardService.checkOrCreateTimecard(employeeId);
+
+            Integer page = (Integer) params.get("page");
+            Integer limit = (Integer) params.get("limit");
+            Integer count = currentTimecard.getTimecardEntries().size();
+            List<TimecardEntry> timecardEntries = timecardService.getTimecardEntries(currentTimecard, page, limit);
+
+            return Result.ok().data("data",timecardEntries).data("count", count);
+        }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
     }
     @RequestMapping("/GetProjects")
-    public Result GetProjects(@RequestBody Map<String, Object> params) {
-        System.out.println("GetProjects" + params);
+    public Result GetProjects() {
+        System.out.println("GetProjects");
         try{
             List<Project> allProject = projectService.getAllProjects();
             return Result.ok().data("data", allProject);
@@ -108,14 +127,15 @@ public class EmployeeController {
     }
 
     @RequestMapping("/AddTimecardEntry")
-    public Result UpdateTimecard(@RequestBody Map<String, Object> params) {
-        System.out.println("UpdateTimecard" + params);
+    public Result AddTimecardEntry(@RequestBody Map<String, Object> params) {
+        System.out.println("AddTimecardEntry" + params);
         try{
             TimecardEntry timecardEntry = new TimecardEntry(params);
             Integer timecardEntryId = timecardService.insertTimecard(timecardEntry);
             return Result.ok("上传成功！时间片表项编号为 " + timecardEntryId);
 
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }

@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TimecardService {
@@ -56,5 +53,22 @@ public class TimecardService {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         String currentDate = formatter.format(new Date(System.currentTimeMillis()));
         timecardMapper.submitTimecard(currentDate, timecardEntryId);
+    }
+
+    public List<TimecardEntry> getTimecardEntries(Timecard timecard, Integer page, Integer limit){
+        List<TimecardEntry> timecardEntries = timecard.getTimecardEntries();
+        if(page == null){
+            return timecardEntries;
+        }
+        int startIndex = (page - 1) * limit;
+        int endIndex = Math.min(startIndex + limit, timecardEntries.size());
+
+        if (startIndex >= timecardEntries.size()) {
+            // 如果请求的页码超出了数组的范围，返回空列表或适当的错误处理
+            return new ArrayList<>();
+        } else {
+            // 根据页码和限制返回相应的数据
+            return timecardEntries.subList(startIndex, endIndex);
+        }
     }
 }
