@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface PurchaseOrderMapper extends BaseMapper<PurchaseOrder> {
@@ -38,5 +37,12 @@ void insertPurchaseOrder(PurchaseOrder purchaseOrder);
 
     @Select("SELECT * FROM `purchase_order`\n" +
             "WHERE `purchase_order_id` = #{purchaseOrderId}")
-    List<Map<String, Object>> selectPurchaseOrder(Integer purchaseOrderId);
+    List<PurchaseOrder> selectPurchaseOrderByPurchaseOrderId(Integer purchaseOrderId);
+
+
+    @Select("SELECT * FROM `purchase_order`\n" +
+            "WHERE `employee_id` = #{employeeId}")
+    List<PurchaseOrder> selectPurchaseOrderByEmployeeId(Integer employeeId);
+
+
 }

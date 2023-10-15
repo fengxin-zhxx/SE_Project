@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PurchaseOrderService {
@@ -28,13 +27,17 @@ public class PurchaseOrderService {
     }
 
     public Result checkPurchaseOrderOwned(PurchaseOrder purchaseOrder){
-        List<Map<String, Object>> res = purchaseOrderMapper.selectPurchaseOrder(purchaseOrder.getPurchaseOrderId());
+        List<PurchaseOrder> res = purchaseOrderMapper.selectPurchaseOrderByPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
         if(res.size() == 0) return Result.error("订单不存在！");
-        Integer trueEmployeeId = (Integer) res.get(0).get("employee_id");
+        Integer trueEmployeeId = res.get(0).getEmployeeId();
         if(trueEmployeeId.equals(purchaseOrder.getEmployeeId())){
             return Result.ok();
         }else{
             return Result.error("订单与员工ID不匹配！");
         }
+    }
+
+    public List<PurchaseOrder> getPurchaseOrdersByEmployeeId(Integer employeeId) {
+        return purchaseOrderMapper.selectPurchaseOrderByEmployeeId(employeeId);
     }
 }

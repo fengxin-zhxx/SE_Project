@@ -31,6 +31,22 @@ public class EmployeeController {
     *  For Commissioned Employees
     *
     */
+
+    @RequestMapping("/GetPurchaseOrder")
+    public Result GetPurchaseOrder(@RequestBody Map<String, Object> params){
+        System.out.println("GetPurchaseOrder" + params);
+        try{
+            Integer employeeId = (Integer) params.get("employee_id");
+
+            List<PurchaseOrder> purchaseOrders = purchaseOrderService.getPurchaseOrdersByEmployeeId(employeeId);
+
+            return Result.ok().data("data",purchaseOrders).data("count", purchaseOrders.size());
+        }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
+    }
+
+
     @RequestMapping("/AddPurchaseOrder")
     public Result AddPurchaseOrder(@RequestBody Map<String, Object> params) {
         System.out.println("AddPurchaseOrder" + params);
@@ -67,7 +83,7 @@ public class EmployeeController {
     public Result DeletePurchaseOrder(@RequestBody Map<String, Object> params) {
         System.out.println("DeletePurchaseOrder" + params);
         try {
-            Integer purchaseOrderId = (Integer) params.get("purchase_order_id");
+            Integer purchaseOrderId = (Integer) params.get("purchaseOrderId");
             purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
             return Result.ok("删除成功！");
         } catch (Exception e) {
@@ -123,6 +139,19 @@ public class EmployeeController {
             TimecardEntry timecardEntry = new TimecardEntry(params);
             timecardService.updateTimecardEntry(timecardEntry);
             return Result.ok("修改成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/DeleteTimecardEntry")
+    public Result DeleteTimecardEntry(@RequestBody Map<String, Object> params) {
+        System.out.println("DeleteTimecardEntry" + params);
+        try {
+            Integer timecardEntryId = (Integer) params.get("timecardEntryId");
+            timecardService.deleteTimecardEntry(timecardEntryId);
+            return Result.ok("删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());

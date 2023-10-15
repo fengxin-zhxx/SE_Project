@@ -75,4 +75,9 @@ public class TimecardService {
     public void updateTimecardEntry(TimecardEntry timecardEntry) {
         timecardMapper.updateTimecardEntry(timecardEntry);
     }
+
+    public void deleteTimecardEntry(Integer timecardEntryId) {
+        timecardMapper.deleteTimecardEntry(timecardEntryId);
+
+    }
 }

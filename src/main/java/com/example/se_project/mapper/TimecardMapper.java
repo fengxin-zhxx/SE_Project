@@ -3,10 +3,7 @@ package com.example.se_project.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.se_project.bean.Timecard;
 import com.example.se_project.bean.TimecardEntry;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -63,4 +60,8 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
             "`hours_worked` = #{hoursWorked}\n" +
             "WHERE `timecard_entry_id` = #{timecardEntryId};\n")
     void updateTimecardEntry(TimecardEntry timecardEntry);
+
+    @Delete("DELETE FROM `timecard_entry` " +
+            "WHERE `timecard_entry_id` = #{timecardEntryId}")
+    void deleteTimecardEntry(Integer timecardEntryId);
 }

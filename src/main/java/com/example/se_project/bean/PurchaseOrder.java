@@ -68,11 +68,13 @@ public class PurchaseOrder {
     }
 
     public PurchaseOrder(Map<String, Object> params) {
-        this.purchaseOrderId = (Integer) params.get("purchase_order_id");
+        if(params.get("purchase_order_id") != null){
+            this.purchaseOrderId = Integer.valueOf(String.valueOf(params.get("purchase_order_id")));
+        }
         this.customerContact = (String) params.get("customer_contact");
         this.customerAddress = (String) params.get("customer_address");
         this.purchasedProduct = (String) params.get("purchased_product");
         this.purchasedDate = (String) params.get("purchased_date");
-        this.employeeId = (Integer) params.get("employee_id");
+        this.employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
     }
 }
