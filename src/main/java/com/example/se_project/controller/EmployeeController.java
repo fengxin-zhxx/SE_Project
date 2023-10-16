@@ -1,19 +1,19 @@
 package com.example.se_project.controller;
 
-import com.example.se_project.bean.Project;
-import com.example.se_project.bean.PurchaseOrder;
-import com.example.se_project.bean.Timecard;
-import com.example.se_project.bean.TimecardEntry;
+import com.example.se_project.bean.*;
+import com.example.se_project.service.PayrollRecordService;
 import com.example.se_project.service.ProjectService;
 import com.example.se_project.service.PurchaseOrderService;
 import com.example.se_project.service.TimecardService;
 import com.example.se_project.utils.Result;
+import com.example.se_project.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.rmi.CORBA.Util;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +26,8 @@ public class EmployeeController {
     private TimecardService timecardService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private PayrollRecordService payrollRecordService;
 
     /*
     *  For Commissioned Employees
@@ -112,9 +114,42 @@ public class EmployeeController {
         }
     }
 
-    @RequestMapping("/GetTimecardEntries")
-    public Result GetTimecardEntries(@RequestBody Map<String, Object> params){
-        System.out.println("GetTimecardEntries" + params);
+    @RequestMapping("/GetTimecards")
+    public Result GetTimecards(@RequestBody Map<String, Object> params){
+        System.out.println("GetTimecards" + params);
+        try{
+            Integer employeeId = (Integer) params.get("employee_id");
+            Integer page = (Integer) params.get("page");
+            Integer limit = (Integer) params.get("limit");
+            List<Timecard> timecards = timecardService.getTimecards(employeeId);
+            Integer count = timecards.size();
+            List<Timecard> timecardsRes= Utils.pageHelper(timecards, page, limit);
+
+            return Result.ok().data("data",timecardsRes).data("count", count);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetTimecardByTimecardId")
+    public Result GetTimecardByTimecardId(@RequestBody Map<String, Object> params){
+        System.out.println("GetTimecardByTimecardId" + params);
+        try{
+            Integer timecardId = (Integer) params.get("timecard_id");
+
+            Timecard timecards = timecardService.getTimecardByTimecardId(timecardId);
+
+            return Result.ok().data("data",timecards);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetCurrentTimecardEntries")
+    public Result GetCurrentTimecardEntries(@RequestBody Map<String, Object> params){
+        System.out.println("GetCurrentTimecardEntries" + params);
         try{
             Integer employeeId = (Integer) params.get("employee_id");
 
@@ -128,6 +163,24 @@ public class EmployeeController {
 
             return Result.ok().data("data",timecardEntries).data("count", count);
         }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetTimecardEntries")
+    public Result GetTimecardEntries(@RequestBody Map<String, Object> params){
+        System.out.println("GetTimecardEntries" + params);
+        try{
+            Integer timecardId = (Integer) params.get("timecard_id");
+            Integer page = (Integer) params.get("page");
+            Integer limit = (Integer) params.get("limit");
+            List<TimecardEntry> timecardEntries = timecardService.getTimecardEntriesByTimcardId(timecardId);
+            Integer count = timecardEntries.size();
+            List<TimecardEntry> payrollRecordsRes = Utils.pageHelper(timecardEntries, page, limit);
+
+            return Result.ok().data("data",payrollRecordsRes).data("count", count);
+        }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -194,6 +247,24 @@ public class EmployeeController {
             timecardService.submitTimecard(timecardEntryId);
             return Result.ok("提交成功！");
         }catch (Exception e){
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetPayrollRecord")
+    public Result GetPayrollRecord(@RequestBody Map<String, Object> params){
+        System.out.println("GetPayrollRecord" + params);
+        try{
+            Integer employeeId = (Integer) params.get("employee_id");
+            Integer page = (Integer) params.get("page");
+            Integer limit = (Integer) params.get("limit");
+            List<PayrollRecord> payrollRecords = payrollRecordService.getPayrollRecordByEmployeeRecordId(employeeId);
+            Integer count = payrollRecords.size();
+            List<PayrollRecord> payrollRecordsRes = Utils.pageHelper(payrollRecords, page, limit);
+
+            return Result.ok().data("data",payrollRecordsRes).data("count", count);
+        }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }

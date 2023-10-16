@@ -3,6 +3,7 @@ package com.example.se_project.service;
 import com.example.se_project.bean.Timecard;
 import com.example.se_project.bean.TimecardEntry;
 import com.example.se_project.mapper.TimecardMapper;
+import com.example.se_project.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,16 +61,7 @@ public class TimecardService {
         if(page == null){
             return timecardEntries;
         }
-        int startIndex = (page - 1) * limit;
-        int endIndex = Math.min(startIndex + limit, timecardEntries.size());
-
-        if (startIndex >= timecardEntries.size()) {
-            // 如果请求的页码超出了数组的范围，返回空列表或适当的错误处理
-            return new ArrayList<>();
-        } else {
-            // 根据页码和限制返回相应的数据
-            return timecardEntries.subList(startIndex, endIndex);
-        }
+        return Utils.pageHelper(timecardEntries, page, limit);
     }
 
     public void updateTimecardEntry(TimecardEntry timecardEntry) {
@@ -79,5 +71,17 @@ public class TimecardService {
     public void deleteTimecardEntry(Integer timecardEntryId) {
         timecardMapper.deleteTimecardEntry(timecardEntryId);
 
+    }
+
+    public List<Timecard> getTimecards(Integer employeeId) {
+        return timecardMapper.getTimecards(employeeId);
+    }
+
+    public List<TimecardEntry> getTimecardEntriesByTimcardId(Integer timecardId) {
+        return timecardMapper.getTimecardEntriesByTimecardId(timecardId);
+    }
+
+    public Timecard getTimecardByTimecardId(Integer timecardId) {
+        return timecardMapper.getTimecardByTimecardId(timecardId);
     }
 }

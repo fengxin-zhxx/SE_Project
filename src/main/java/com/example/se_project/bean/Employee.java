@@ -1,6 +1,8 @@
 package com.example.se_project.bean;
 
 
+import com.example.se_project.utils.Utils;
+
 import java.util.Map;
 
 
@@ -10,7 +12,7 @@ public class Employee {
     public String lastName;
     public String employeeType;
     public String mailAddress;
-    public String socialSeurityNumber;
+    public String socialSecurityNumber;
     public Double standardTaxDeductions;
     public Double otherDeductions;
     public String phoneNumber;
@@ -19,14 +21,16 @@ public class Employee {
     public Double commissionRate;
     public Double hourLimit;
     public String payMethod;
+    public String emailAddress;
+    public String depositAddress;
 
-    public Employee(Integer employeeId, String firstName, String lastName, String employeeType, String mailAddress, String socialSeurityNumber, Double standardTaxDeductions, Double otherDeductions, String phoneNumber, Double hourlyRate, Double salary, Double commissionRate, Double hourLimit, String payMethod) {
+    public Employee(Integer employeeId, String firstName, String lastName, String employeeType, String mailAddress, String socialSecurityNumber, Double standardTaxDeductions, Double otherDeductions, String phoneNumber, Double hourlyRate, Double salary, Double commissionRate, Double hourLimit, String payMethod, String emailAddress, String depositAddress) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.employeeType = employeeType;
         this.mailAddress = mailAddress;
-        this.socialSeurityNumber = socialSeurityNumber;
+        this.socialSecurityNumber = socialSecurityNumber;
         this.standardTaxDeductions = standardTaxDeductions;
         this.otherDeductions = otherDeductions;
         this.phoneNumber = phoneNumber;
@@ -35,6 +39,24 @@ public class Employee {
         this.commissionRate = commissionRate;
         this.hourLimit = hourLimit;
         this.payMethod = payMethod;
+        this.emailAddress = emailAddress;
+        this.depositAddress = depositAddress;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getDepositAddress() {
+        return depositAddress;
+    }
+
+    public void setDepositAddress(String depositAddress) {
+        this.depositAddress = depositAddress;
     }
 
     public Integer getEmployeeId() {
@@ -77,12 +99,12 @@ public class Employee {
         this.mailAddress = mailAddress;
     }
 
-    public String getSocialSeurityNumber() {
-        return socialSeurityNumber;
+    public String getSocialSecurityNumber() {
+        return socialSecurityNumber;
     }
 
-    public void setSocialSeurityNumber(String socialSeurityNumber) {
-        this.socialSeurityNumber = socialSeurityNumber;
+    public void setSocialSecurityNumber(String socialSecurityNumber) {
+        this.socialSecurityNumber = socialSecurityNumber;
     }
 
     public Double getStandardTaxDeductions() {
@@ -150,32 +172,48 @@ public class Employee {
     }
 
     public Employee(Map<String, Object> params){
-        this.employeeId = (Integer)  params.get("employee_id");
-        this.firstName = (String) params.get("first_name");
-        this.lastName = (String) params.get("last_name");
+        if(!Utils.isEmpty(String.valueOf(params.get("employee_id")))){
+            this.employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+        }
+        this.firstName = String.valueOf(params.get("first_name"));
+        this.lastName = String.valueOf(params.get("last_name"));
         this.employeeType = (String) params.get("employee_type");
-        this.mailAddress = (String) params.get("mail_address");
-        this.socialSeurityNumber = (String) params.get("social_security_number");
+        this.emailAddress = (String) params.get("email_address");
+        this.socialSecurityNumber = String.valueOf(params.get("social_security_number"));
         this.standardTaxDeductions = Double.valueOf(String.valueOf(params.get("standard_tax_deductions")));
         this.otherDeductions = Double.valueOf(String.valueOf(params.get("other_deductions")));
-        this.phoneNumber = (String) params.get("phone_number");
+        this.phoneNumber = String.valueOf(params.get("phone_number"));
         this.hourlyRate = Double.valueOf(String.valueOf(params.get("hourly_rate")));
-        if(params.get("salary") != null) {
+        if(!Utils.isEmpty(String.valueOf(params.get("salary")))) {
             this.salary = Double.valueOf(String.valueOf(params.get("salary")));
         }else{
             this.salary = null;
         }
-        if(params.get("commission_rate") != null) {
+        if(!Utils.isEmpty(String.valueOf(params.get("commission_rate")))) {
             this.commissionRate = Double.valueOf(String.valueOf(params.get("commission_rate")));
         }else{
             this.commissionRate = null;
         }
-        if(params.get("hour_limit") != null){
+        if(!Utils.isEmpty(String.valueOf(params.get("hour_limit")))){
             this.hourLimit = Double.valueOf(String.valueOf(params.get("hour_limit")));
         }else{
             this.hourLimit = null;
         }
-        this.payMethod = "pickup";
+        if(!Utils.isEmpty(String.valueOf(params.get("mail_address")))){
+            this.mailAddress = String.valueOf(params.get("mail_address"));
+        }else{
+            this.mailAddress = null;
+        }
+        if(!Utils.isEmpty(String.valueOf(params.get("deposit_address")))){
+            this.depositAddress = String.valueOf(params.get("deposit_address"));
+        }else{
+            this.depositAddress = null;
+        }
+        if(!Utils.isEmpty(String.valueOf(params.get("pay_method")))){
+            this.payMethod = String.valueOf(params.get("pay_method"));
+        }else{
+            this.payMethod = "pickup";
+        }
     }
 
 }

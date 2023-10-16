@@ -22,4 +22,8 @@ public class EmployeeService {
     public void deleteEmployee(Integer employeeId){
         employeeMapper.deleteEmployee(employeeId);
     }
+
+    public Employee getEmployee(Integer employeeId) {
+        return employeeMapper.getEmployee(employeeId);
+    }
 }

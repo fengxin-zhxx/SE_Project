@@ -18,7 +18,18 @@ public class AdministratorController {
     @Autowired
     private EmployeeService employeeService;
 
-
+    @RequestMapping("/GetEmployee")
+    public Result GetEmployee(@RequestBody Map<String, Object> params){
+        System.out.println("GetEmployee" + params);
+        try{
+            Integer employeeId = (Integer) params.get("employee_id");
+            Employee employee = employeeService.getEmployee(employeeId);
+            return Result.ok().data("data", employee);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
 
     @RequestMapping("/AddEmployee")
     public Result AddEmployee(@RequestBody Map<String, Object> params){

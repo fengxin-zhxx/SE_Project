@@ -64,4 +64,26 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
     @Delete("DELETE FROM `timecard_entry` " +
             "WHERE `timecard_entry_id` = #{timecardEntryId}")
     void deleteTimecardEntry(Integer timecardEntryId);
+
+
+    @Select("SELECT `timecard`.`timecard_id`,\n" +
+            "    `timecard`.`employee_id`,\n" +
+            "    `timecard`.`start_date`,\n" +
+            "    `timecard`.`end_date`,\n" +
+            "    `timecard`.`submitted_date`,\n" +
+            "    `timecard`.`status`\n" +
+            "FROM `se_project`.`timecard`\n" +
+            "WHERE `employee_id` = #{employeeId}")
+    List<Timecard> getTimecards(Integer employeeId);
+
+
+    @Select("SELECT `timecard`.`timecard_id`,\n" +
+            "    `timecard`.`employee_id`,\n" +
+            "    `timecard`.`start_date`,\n" +
+            "    `timecard`.`end_date`,\n" +
+            "    `timecard`.`submitted_date`,\n" +
+            "    `timecard`.`status`\n" +
+            "FROM `se_project`.`timecard`\n" +
+            "WHERE `timecard_id` = #{timecardId}")
+    Timecard getTimecardByTimecardId(Integer timecardId);
 }
