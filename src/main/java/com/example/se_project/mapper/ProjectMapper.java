@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface ProjectMapper extends BaseMapper<Project> {
@@ -15,4 +16,6 @@ public interface ProjectMapper extends BaseMapper<Project> {
 
     @Select("SELECT * FROM `projects`")
     List<Project> getAllProjects();
+
+
 }

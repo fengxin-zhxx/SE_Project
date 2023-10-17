@@ -18,4 +18,7 @@ public class PayrollRecordService {
     }
 
 
+    public void confirmPayrollRecord(Integer payrollRecordId) {
+        payrollRecordMapper.confirmPayrollRecord(payrollRecordId);
+    }
 }

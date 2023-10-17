@@ -86,4 +86,11 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
             "FROM `se_project`.`timecard`\n" +
             "WHERE `timecard_id` = #{timecardId}")
     Timecard getTimecardByTimecardId(Integer timecardId);
+
+
+
+    @Select("SELECT `project_id` projectId, `project_name` projectName, `project_description` projectDescription, sum(hours_worked) sumHours FROM timecard NATURAL JOIN timecard_entry NATURAL JOIN projects " +
+            "WHERE employee_id = #{employeeId} \n" +
+            "GROUP BY `project_id`\n")
+    List<Map<String, Object>> getProjectTotalHours(Integer employeeId);
 }

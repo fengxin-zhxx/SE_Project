@@ -33,4 +33,11 @@ public interface PayrollRecordMapper {
     @Select("SELECT * FROM `payroll_record` WHERE `employee_id` = #{employeeId}")
     List<PayrollRecord> getPayrollRecordByEmployeeRecordId(Integer employeeId);
 
+    @Update(
+            "UPDATE `payroll_record`\n" +
+                    "SET\n" +
+                    "`status` = '已确认'\n" +
+                    "WHERE `payroll_record_id` = #{payrollRecordId}"
+    )
+    void confirmPayrollRecord(Integer payrollRecordId);
 }

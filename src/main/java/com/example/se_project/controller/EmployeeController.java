@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.rmi.CORBA.Util;
 import java.util.List;
 import java.util.Map;
 
@@ -38,12 +37,13 @@ public class EmployeeController {
     public Result GetPurchaseOrder(@RequestBody Map<String, Object> params){
         System.out.println("GetPurchaseOrder" + params);
         try{
-            Integer employeeId = (Integer) params.get("employee_id");
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
 
             List<PurchaseOrder> purchaseOrders = purchaseOrderService.getPurchaseOrdersByEmployeeId(employeeId);
 
             return Result.ok().data("data",purchaseOrders).data("count", purchaseOrders.size());
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -85,7 +85,7 @@ public class EmployeeController {
     public Result DeletePurchaseOrder(@RequestBody Map<String, Object> params) {
         System.out.println("DeletePurchaseOrder" + params);
         try {
-            Integer purchaseOrderId = (Integer) params.get("purchaseOrderId");
+            Integer purchaseOrderId = Integer.valueOf(String.valueOf(params.get("purchaseOrderId")));
             purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
             return Result.ok("删除成功！");
         } catch (Exception e) {
@@ -103,13 +103,14 @@ public class EmployeeController {
     public Result GetCurrentTimecard(@RequestBody Map<String, Object> params){
         System.out.println("GetCurrentTimecard" + params);
         try{
-            Integer employeeId = (Integer) params.get("employee_id");
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
 
             // 保证timecard存在，不存在则新建，返回当前timecard编号
             Timecard currentTimecard = timecardService.checkOrCreateTimecard(employeeId);
 
             return Result.ok().data("data",currentTimecard);
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -118,9 +119,9 @@ public class EmployeeController {
     public Result GetTimecards(@RequestBody Map<String, Object> params){
         System.out.println("GetTimecards" + params);
         try{
-            Integer employeeId = (Integer) params.get("employee_id");
-            Integer page = (Integer) params.get("page");
-            Integer limit = (Integer) params.get("limit");
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
             List<Timecard> timecards = timecardService.getTimecards(employeeId);
             Integer count = timecards.size();
             List<Timecard> timecardsRes= Utils.pageHelper(timecards, page, limit);
@@ -136,7 +137,7 @@ public class EmployeeController {
     public Result GetTimecardByTimecardId(@RequestBody Map<String, Object> params){
         System.out.println("GetTimecardByTimecardId" + params);
         try{
-            Integer timecardId = (Integer) params.get("timecard_id");
+            Integer timecardId = Integer.valueOf(String.valueOf(params.get("timecard_id")));
 
             Timecard timecards = timecardService.getTimecardByTimecardId(timecardId);
 
@@ -151,18 +152,19 @@ public class EmployeeController {
     public Result GetCurrentTimecardEntries(@RequestBody Map<String, Object> params){
         System.out.println("GetCurrentTimecardEntries" + params);
         try{
-            Integer employeeId = (Integer) params.get("employee_id");
-
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+            
             // 保证timecard存在，不存在则新建，返回当前timecard编号
             Timecard currentTimecard = timecardService.checkOrCreateTimecard(employeeId);
 
-            Integer page = (Integer) params.get("page");
-            Integer limit = (Integer) params.get("limit");
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
             Integer count = currentTimecard.getTimecardEntries().size();
             List<TimecardEntry> timecardEntries = timecardService.getTimecardEntries(currentTimecard, page, limit);
 
             return Result.ok().data("data",timecardEntries).data("count", count);
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -171,9 +173,9 @@ public class EmployeeController {
     public Result GetTimecardEntries(@RequestBody Map<String, Object> params){
         System.out.println("GetTimecardEntries" + params);
         try{
-            Integer timecardId = (Integer) params.get("timecard_id");
-            Integer page = (Integer) params.get("page");
-            Integer limit = (Integer) params.get("limit");
+            Integer timecardId = Integer.valueOf(String.valueOf(params.get("timecard_id")));
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
             List<TimecardEntry> timecardEntries = timecardService.getTimecardEntriesByTimcardId(timecardId);
             Integer count = timecardEntries.size();
             List<TimecardEntry> payrollRecordsRes = Utils.pageHelper(timecardEntries, page, limit);
@@ -202,7 +204,7 @@ public class EmployeeController {
     public Result DeleteTimecardEntry(@RequestBody Map<String, Object> params) {
         System.out.println("DeleteTimecardEntry" + params);
         try {
-            Integer timecardEntryId = (Integer) params.get("timecardEntryId");
+            Integer timecardEntryId = Integer.valueOf(String.valueOf(params.get("timecardEntryId")));
             timecardService.deleteTimecardEntry(timecardEntryId);
             return Result.ok("删除成功！");
         } catch (Exception e) {
@@ -218,6 +220,7 @@ public class EmployeeController {
             List<Project> allProject = projectService.getAllProjects();
             return Result.ok().data("data", allProject);
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -240,13 +243,14 @@ public class EmployeeController {
     public Result SubmitTimecardEntry(@RequestBody Map<String, Object> params) {
         System.out.println("SubmitTimecardEntry" + params);
         try{
-            Integer timecardEntryId = (Integer) params.get("timecard_id");
+            Integer timecardEntryId = Integer.valueOf(String.valueOf(params.get("timecard_id")));
             /*
             todo: 检查总工作时长是否超过规定
             */
             timecardService.submitTimecard(timecardEntryId);
             return Result.ok("提交成功！");
         }catch (Exception e){
+            e.printStackTrace();
             return Result.error(e.getMessage());
         }
     }
@@ -255,12 +259,46 @@ public class EmployeeController {
     public Result GetPayrollRecord(@RequestBody Map<String, Object> params){
         System.out.println("GetPayrollRecord" + params);
         try{
-            Integer employeeId = (Integer) params.get("employee_id");
-            Integer page = (Integer) params.get("page");
-            Integer limit = (Integer) params.get("limit");
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
             List<PayrollRecord> payrollRecords = payrollRecordService.getPayrollRecordByEmployeeRecordId(employeeId);
             Integer count = payrollRecords.size();
             List<PayrollRecord> payrollRecordsRes = Utils.pageHelper(payrollRecords, page, limit);
+
+            return Result.ok().data("data",payrollRecordsRes).data("count", count);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/ConfirmPayrollRecord")
+    public Result ConfirmPayrollRecord(@RequestBody Map<String, Object> params){
+        System.out.println("ConfirmPayrollRecord" + params);
+        try{
+            Integer payrollRecordId = Integer.valueOf(String.valueOf(params.get("payrollRecordId")));
+
+
+            payrollRecordService.confirmPayrollRecord(payrollRecordId);
+
+            return Result.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetProjectTotalHours")
+    public Result GetProjectTotalHours(@RequestBody Map<String, Object> params){
+        System.out.println("GetProjectTotalHours" + params);
+        try{
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
+            List<Map<String, Object>> projectTotalHours = timecardService.getProjectTotalHours(employeeId);
+            Integer count = projectTotalHours.size();
+            List<Map<String, Object>> payrollRecordsRes = Utils.pageHelper(projectTotalHours, page, limit);
 
             return Result.ok().data("data",payrollRecordsRes).data("count", count);
         }catch (Exception e){

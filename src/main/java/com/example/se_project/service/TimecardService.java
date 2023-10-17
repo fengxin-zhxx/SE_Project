@@ -84,4 +84,8 @@ public class TimecardService {
     public Timecard getTimecardByTimecardId(Integer timecardId) {
         return timecardMapper.getTimecardByTimecardId(timecardId);
     }
+
+    public List<Map<String, Object>> getProjectTotalHours(Integer employeeId) {
+        return timecardMapper.getProjectTotalHours(employeeId);
+    }
 }

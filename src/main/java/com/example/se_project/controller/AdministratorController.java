@@ -22,7 +22,7 @@ public class AdministratorController {
     public Result GetEmployee(@RequestBody Map<String, Object> params){
         System.out.println("GetEmployee" + params);
         try{
-            Integer employeeId = (Integer) params.get("employee_id");
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
             Employee employee = employeeService.getEmployee(employeeId);
             return Result.ok().data("data", employee);
         }catch (Exception e) {
@@ -59,7 +59,7 @@ public class AdministratorController {
     public Result DeleteEmployee(@RequestBody Map<String, Object> params){
         System.out.println("DeleteEmployee" + params);
         try{
-            employeeService.deleteEmployee((Integer) params.get("employee_id"));
+            employeeService.deleteEmployee(Integer.valueOf(String.valueOf(params.get("employee_id"))));
             return Result.ok("删除成功！");
         }catch (Exception e) {
             e.printStackTrace();
