@@ -10,8 +10,9 @@ public class PayrollRecord {
     private Integer employeeId;
     private String startDate;
     private String endDate;
+    private String payMethod;
 
-    public PayrollRecord(Integer payrollRecordId, String payrollDate, Double payrollAmount, String status, Integer employeeId, String startDate, String endDate) {
+    public PayrollRecord(Integer payrollRecordId, String payrollDate, Double payrollAmount, String status, Integer employeeId, String startDate, String endDate, String payMethod) {
         this.payrollRecordId = payrollRecordId;
         this.payrollDate = payrollDate;
         this.payrollAmount = payrollAmount;
@@ -19,6 +20,25 @@ public class PayrollRecord {
         this.employeeId = employeeId;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.payMethod = payMethod;
+    }
+
+    public PayrollRecord(String payrollDate, Double payrollAmount, Integer employeeId, String startDate, String endDate, String payMethod) {
+        this.payrollDate = payrollDate;
+        this.payrollAmount = payrollAmount;
+        this.status = "未确认";
+        this.employeeId = employeeId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.payMethod = payMethod;
+    }
+
+    public String getPayMethod() {
+        return payMethod;
+    }
+
+    public void setPayMethod(String payMethod) {
+        this.payMethod = payMethod;
     }
 
     public Integer getPayrollRecordId() {

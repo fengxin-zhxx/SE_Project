@@ -6,6 +6,8 @@ import com.example.se_project.bean.Employee;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface EmployeeMapper extends BaseMapper<Employee> {
     @Insert(
@@ -49,4 +51,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
 
     @Select("SELECT * FROM `employee` WHERE `employee_id` = #{employeeId} ")
     Employee getEmployee(Integer employeeId);
+
+    @Select("SELECT * FROM `employee`")
+    List<Employee> getAllEmployee();
 }

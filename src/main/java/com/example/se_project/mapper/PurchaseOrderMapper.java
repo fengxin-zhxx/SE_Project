@@ -45,4 +45,7 @@ void insertPurchaseOrder(PurchaseOrder purchaseOrder);
     List<PurchaseOrder> selectPurchaseOrderByEmployeeId(Integer employeeId);
 
 
+    @Select("SELECT count(*) FROM `purchase_order` WHERE `purchased_date` BETWEEN #{startDate} AND #{endDate};")
+    Integer selectPurchaseOrderCount(String startDate, String endDate);
+
 }

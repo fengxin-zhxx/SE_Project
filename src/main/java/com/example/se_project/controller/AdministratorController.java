@@ -3,6 +3,8 @@ package com.example.se_project.controller;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.example.se_project.bean.Employee;
 import com.example.se_project.service.EmployeeService;
+import com.example.se_project.service.PayrollRecordService;
+import com.example.se_project.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.se_project.utils.Result;
 
+import javax.rmi.CORBA.Util;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,12 +21,33 @@ import java.util.Map;
 public class AdministratorController {
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private PayrollRecordService payrollRecordService;
+
+    @RequestMapping("/GetAllEmployee")
+    public Result GetAllEmployee(@RequestBody Map<String, Object> params){
+        System.out.println("GetAllEmployee" + params);
+        try{
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
+            List<Employee> employees = employeeService.getAllEmployee();
+            Integer count = employees.size();
+            return Result.ok().data("data", Utils.pageHelper(employees, page, limit)).data("count", count);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
 
     @RequestMapping("/GetEmployee")
     public Result GetEmployee(@RequestBody Map<String, Object> params){
         System.out.println("GetEmployee" + params);
         try{
             Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+            Boolean checkRes = employeeService.checkEmployeeId(employeeId);
+            if(!checkRes){
+                return Result.error("员工ID不存在！");
+            }
             Employee employee = employeeService.getEmployee(employeeId);
             return Result.ok().data("data", employee);
         }catch (Exception e) {
@@ -59,8 +84,20 @@ public class AdministratorController {
     public Result DeleteEmployee(@RequestBody Map<String, Object> params){
         System.out.println("DeleteEmployee" + params);
         try{
-            employeeService.deleteEmployee(Integer.valueOf(String.valueOf(params.get("employee_id"))));
+            employeeService.deleteEmployee(Integer.valueOf(String.valueOf(params.get("employeeId"))));
             return Result.ok("删除成功！");
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/RefreshPayrollRecord")
+    public Result RefreshPayrollRecord(){
+        System.out.println("RefreshPayrollRecord");
+        try{
+            payrollRecordService.refreshPayrollRecord();
+            return Result.ok("更新成功！");
         }catch (Exception e) {
             e.printStackTrace();
             return Result.error(e.getMessage());

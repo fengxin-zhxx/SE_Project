@@ -183,7 +183,11 @@ public class Employee {
         this.standardTaxDeductions = Double.valueOf(String.valueOf(params.get("standard_tax_deductions")));
         this.otherDeductions = Double.valueOf(String.valueOf(params.get("other_deductions")));
         this.phoneNumber = String.valueOf(params.get("phone_number"));
-        this.hourlyRate = Double.valueOf(String.valueOf(params.get("hourly_rate")));
+        if(!Utils.isEmpty(String.valueOf(params.get("hourly_rate")))) {
+            this.hourlyRate = Double.valueOf(String.valueOf(params.get("hourly_rate")));
+        }else{
+            this.hourlyRate = null;
+        }
         if(!Utils.isEmpty(String.valueOf(params.get("salary")))) {
             this.salary = Double.valueOf(String.valueOf(params.get("salary")));
         }else{

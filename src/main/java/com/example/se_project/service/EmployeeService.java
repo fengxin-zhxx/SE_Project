@@ -5,6 +5,8 @@ import com.example.se_project.mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeService {
     @Autowired
@@ -25,5 +27,14 @@ public class EmployeeService {
 
     public Employee getEmployee(Integer employeeId) {
         return employeeMapper.getEmployee(employeeId);
+    }
+
+    public List<Employee> getAllEmployee() {
+        return employeeMapper.getAllEmployee();
+    }
+
+
+    public Boolean checkEmployeeId(Integer employeeId) {
+        return getEmployee(employeeId) != null;
     }
 }

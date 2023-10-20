@@ -1,10 +1,7 @@
 package com.example.se_project.controller;
 
 import com.example.se_project.bean.*;
-import com.example.se_project.service.PayrollRecordService;
-import com.example.se_project.service.ProjectService;
-import com.example.se_project.service.PurchaseOrderService;
-import com.example.se_project.service.TimecardService;
+import com.example.se_project.service.*;
 import com.example.se_project.utils.Result;
 import com.example.se_project.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,8 @@ public class EmployeeController {
     private ProjectService projectService;
     @Autowired
     private PayrollRecordService payrollRecordService;
+    @Autowired
+    private EmployeeService employeeService;
 
     /*
     *  For Commissioned Employees
@@ -38,10 +37,26 @@ public class EmployeeController {
         System.out.println("GetPurchaseOrder" + params);
         try{
             Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
-
             List<PurchaseOrder> purchaseOrders = purchaseOrderService.getPurchaseOrdersByEmployeeId(employeeId);
 
             return Result.ok().data("data",purchaseOrders).data("count", purchaseOrders.size());
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetPurchaseOrderByPurchaseOrderId")
+    public Result GetPurchaseOrderByPurchaseOrderId(@RequestBody Map<String, Object> params){
+        System.out.println("GetPurchaseOrderByPurchaseOrderId" + params);
+        try{
+            Integer employeeId = Integer. valueOf(String.valueOf(params.get("employee_id")));
+            Integer purchaseOrderId = Integer.valueOf(String.valueOf(params.get("purchase_order_id")));
+            Result checkRes = purchaseOrderService.checkPurchaseOrderOwned(purchaseOrderId, employeeId);
+            if(!checkRes.getSuccess()){
+                return checkRes;
+            }
+            return checkRes;
         }catch (Exception e){
             e.printStackTrace();
             return Result.error(e.getMessage());
@@ -192,6 +207,10 @@ public class EmployeeController {
         System.out.println("UpdateTimecardEntry" + params);
         try {
             TimecardEntry timecardEntry = new TimecardEntry(params);
+            Boolean checkRes = timecardService.checkUpdateTimecardEntry(timecardEntry);
+            if(checkRes == Boolean.FALSE){
+                return Result.error("更新失败，超过本周工作时限");
+            }
             timecardService.updateTimecardEntry(timecardEntry);
             return Result.ok("修改成功！");
         } catch (Exception e) {
@@ -230,6 +249,10 @@ public class EmployeeController {
         System.out.println("AddTimecardEntry" + params);
         try{
             TimecardEntry timecardEntry = new TimecardEntry(params);
+            Boolean checkRes = timecardService.checkInsertTimecardEntry(timecardEntry);
+            if(checkRes == Boolean.FALSE){
+                return Result.error("上传失败，超过本周工作时限");
+            }
             Integer timecardEntryId = timecardService.insertTimecard(timecardEntry);
             return Result.ok("上传成功！时间片表项编号为 " + timecardEntryId);
 
@@ -273,6 +296,23 @@ public class EmployeeController {
         }
     }
 
+    @RequestMapping("/GetAllPayrollRecord")
+    public Result GetAllPayrollRecord(@RequestBody Map<String, Object> params){
+        System.out.println("GetAllPayrollRecord" + params);
+        try{
+            Integer page = Integer.valueOf(String.valueOf(params.get("page")));
+            Integer limit = Integer.valueOf(String.valueOf(params.get("limit")));
+            List<PayrollRecord> payrollRecords = payrollRecordService.getAllPayrollRecord();
+            Integer count = payrollRecords.size();
+            List<PayrollRecord> payrollRecordsRes = Utils.pageHelper(payrollRecords, page, limit);
+
+            return Result.ok().data("data",payrollRecordsRes).data("count", count);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
     @RequestMapping("/ConfirmPayrollRecord")
     public Result ConfirmPayrollRecord(@RequestBody Map<String, Object> params){
         System.out.println("ConfirmPayrollRecord" + params);
@@ -301,6 +341,59 @@ public class EmployeeController {
             List<Map<String, Object>> payrollRecordsRes = Utils.pageHelper(projectTotalHours, page, limit);
 
             return Result.ok().data("data",payrollRecordsRes).data("count", count);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @RequestMapping("/GetReport")
+    public Result GetReport(@RequestBody Map<String, Object> params){
+        System.out.println("GetReport" + params);
+        try{
+            Integer employeeId = Integer.valueOf(String.valueOf(params.get("employee_id")));
+
+            Boolean checkRes = employeeService.checkEmployeeId(employeeId);
+
+            if(!checkRes){
+                return Result.error("员工ID不存在！");
+            }
+
+
+            String dataRange = String.valueOf(params.get("date_range"));
+            String type = String.valueOf(params.get("type"));
+
+            String[] dataSplit = dataRange.split(" ~ ");
+            String startDate = dataSplit[0], endDate = dataSplit[1];
+
+            Integer project_id;
+            if(Utils.isEmpty(String.valueOf(params.get("project_id")))){
+                project_id = null;
+            }else{
+                project_id = Integer.valueOf(String.valueOf(params.get("project_id")));
+            }
+
+            List<Map<String, Object>> reportRes = null;
+            switch (type){
+                case "TotalHoursWorked":
+                    reportRes = timecardService.getTotalHoursWorked(employeeId, startDate, endDate);
+                    break;
+                case "TotalHoursWorkedForAProject":
+                    reportRes = timecardService.getTotalHoursWorkedForAProject(employeeId, startDate, endDate, project_id);
+                    break;
+                case "Vacation/SickLeave":
+                    reportRes = timecardService.getVacationOrSickLeaveDays(employeeId, startDate, endDate);
+                    break;
+                case "TotalPay":
+                    reportRes = payrollRecordService.getTotalPay(employeeId, startDate, endDate);
+                    break;
+                default:
+                    throw new Exception("Unknown Type");
+            }
+//            Integer count = projectTotalHours.size();
+//            List<Map<String, Object>> payrollRecordsRes = Utils.pageHelper(projectTotalHours, page, limit);
+//
+            return Result.ok().data("data",reportRes);
         }catch (Exception e){
             e.printStackTrace();
             return Result.error(e.getMessage());

@@ -6,7 +6,6 @@ import com.example.se_project.bean.TimecardEntry;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
             "INSERT INTO timecard(`employee_id`, `start_date`, `end_date`, `status`) " +
                     "values (#{employeeId}, #{startDate}, #{endDate}, #{status})"
     )
-    @Options(useGeneratedKeys=true, keyProperty="timecardId", keyColumn="timecard_id")
     void insertTimecard(Timecard timecard);
 
     @Update(
@@ -93,4 +91,38 @@ public interface TimecardMapper extends BaseMapper<Timecard> {
             "WHERE employee_id = #{employeeId} \n" +
             "GROUP BY `project_id`\n")
     List<Map<String, Object>> getProjectTotalHours(Integer employeeId);
+
+
+    @Select("SELECT IFNULL(sum(hours_worked), 0) hours, #{employeeId} employeeId , #{startDate} startDate, #{endDate} endDate \n" +
+            "FROM `timecard_entry` NATURAL JOIN `timecard`\n" +
+            "WHERE employee_id = #{employeeId} AND start_date >= #{startDate} AND end_date <= #{endDate}")
+    List<Map<String, Object>> getTotalHoursWorked(Integer employeeId, String startDate, String endDate);
+
+
+    @Select("SELECT IFNULL(sum(hours_worked), 0) hours,  #{employeeId} employeeId, #{project_id} projectId, #{startDate} startDate, #{endDate} endDate, project_name projectName, project_description projectDescription \n" +
+            "FROM `timecard_entry` NATURAL JOIN `timecard` NATURAL JOIN projects \n" +
+            "WHERE employee_id = #{employeeId} AND start_date >= #{startDate} AND end_date <= #{endDate} AND project_id = #{project_id}")
+    List<Map<String, Object>> getTotalHoursWorkedForAProject(Integer employeeId, String startDate, String endDate, Integer project_id);
+
+
+    @Select("SELECT DATEDIFF(#{endDate}, #{startDate}) - COUNT(DISTINCT DATE(work_date)) AS days, #{employeeId} employeeId , #{startDate} startDate, #{endDate} endDate \n" +
+            "FROM timecard_entry NATURAL JOIN TIMECARD\n" +
+            "WHERE DATE(work_date) BETWEEN #{startDate} AND #{endDate};")
+    List<Map<String, Object>> getVacationOrSickLeaveDays(Integer employeeId, String startDate, String endDate);
+
+    @Select("SELECT IFNULL(sum(hours_worked), 0) FROM `timecard_entry` WHERE `timecard_id` = #{timecardId}")
+    Integer getTotalHoursWorkedInATimecard(Integer timecardId);
+
+    @Select("SELECT hour_limit FROM employee NATURAL JOIN timecard WHERE `timecard_id` = #{timecardId}")
+    Integer getLimitHoursByTimecardId(Integer timecardId);
+
+    @Select("SELECT * FROM `timecard_entry` WHERE `timecard_entry_id` = #{timecardEntryId}")
+    TimecardEntry getTimecardEntryByTimecardEntryId(Integer timecardEntryId);
+
+    @Update("UPDATE `timecard` SET `status` = 'Submitted' ")
+    void submitAllTimecard();
+
+    @Select("SELECT * FROM `timecard` WHERE NOW() BETWEEN start_date AND end_date;")
+    List<Timecard> getCurrentPeriodTimecards();
+
 }
